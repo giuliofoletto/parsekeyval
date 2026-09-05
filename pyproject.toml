@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "parsekeyval"
+version = "0.1.0"
+description = "Argparse wrapper to parse key-value pairs from command line arguments or a configuration file."
+readme = "README.md"
+license = { file = "LICENSE.txt" }
+authors = [
+    { name = "Giulio Foletto", email = "giulio.foletto@outlook.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.13.5",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/parsekeyval"]
