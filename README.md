@@ -23,6 +23,7 @@ As you can see in [examples/example.py](examples/example.py), you can define you
 ```python
 from parsekeyval import BaseArguments, Field, parse_arguments
 
+
 class Arguments(BaseArguments):
     word: str = Field(default="hello", description="Word to print")
     number: int = Field(default=1, description="Number of times to print the word")

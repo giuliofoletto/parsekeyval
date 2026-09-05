@@ -6,7 +6,7 @@ from parsekeyval.fileio import process_existing_file_name, read_config_file
 
 
 class BaseArguments(BaseModel):
-    config: str = Field(default=None, description="File containing all arguments")
+    config: str | None = Field(default=None, description="File containing all arguments")
 
 
 def add_model(parser, model):
@@ -48,7 +48,7 @@ def parse_arguments(arguments_class):
 
     # Create an object of user settings
     if hasattr(kwargs, "config"):
-        path = process_existing_file_name(kwargs.config, folders=["data"], formats=[".json"])
+        path = process_existing_file_name(kwargs.config, formats=[".json", ".toml"])
         config = read_config_file(path)
     else:
         config = dict()

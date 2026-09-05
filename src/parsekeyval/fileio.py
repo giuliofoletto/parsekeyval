@@ -3,7 +3,9 @@ import tomllib
 from pathlib import Path
 
 
-def process_existing_file_name(file_name, folders=[], formats=[]):
+def process_existing_file_name(file_name, folders=None, formats=None):
+    folders = folders or []
+    formats = formats or []
     base_candidates = [Path(file_name)]
     for folder in folders:
         base_candidates.append(Path(__file__).parent.parent.absolute() / folder / file_name)
@@ -47,9 +49,6 @@ def read_config_file(file_path):
             pass
     # If we arrive here, there has been an issue in all reading functions
     raise ValueError(
-        "File "
-        + file_path
-        + " is not valid in any of the supported formats ("
-        + ",".join(supported_formats)
-        + ")"
+        f"File {file_path} is not valid in any of the supported formats "
+        f"({','.join(supported_formats)})"
     )
