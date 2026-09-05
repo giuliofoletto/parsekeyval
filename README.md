@@ -53,3 +53,12 @@ python examples/example.py --word "hi" --config examples/config.toml
 ```
 
 the argument `word` will be set to `"hi"` (from CLI), while the argument `number` will be set to `2` (from config file), and the argument `uppercase` will be set to `False` (default value in the definition of the argument).
+
+## AI disclosure
+
+The design of this project is mine, but after the first implementation, I used the [pi agent](https://pi.dev) with OpenAI models to improve the code.
+For instance, tests are AI-generated.
+
+## Acknowledgements
+
+The core of this small project is the `add_model` function, taken from [this StackOverflow answer](https://stackoverflow.com/questions/72741663/argument-parser-from-a-pydantic-model).
