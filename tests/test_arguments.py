@@ -3,6 +3,7 @@ import json
 import pytest
 
 from parsekeyval import BaseArguments, Field, parse_arguments
+from parsekeyval.fileio import read_config_file
 
 
 class ExampleArguments(BaseArguments):
@@ -62,3 +63,11 @@ def test_cli_arguments_override_config_file(tmp_path):
 def test_missing_config_file_raises():
     with pytest.raises(FileNotFoundError):
         parse_arguments(ExampleArguments, ["--config", "missing.json"])
+
+
+def test_read_config_file_rejects_unsupported_suffix(tmp_path):
+    config_path = tmp_path / "config.yaml"
+    config_path.write_text("word: from-yaml\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="Unsupported config file format"):
+        read_config_file(config_path)

@@ -27,7 +27,7 @@ def process_existing_file_name(file_name, folders=None, formats=None):
 
 
 def read_json(file_path):
-    with open(file_path, "r") as f:
+    with open(file_path, "r", encoding="utf-8") as f:
         data = json.load(f)
     return data
 
@@ -39,16 +39,11 @@ def read_toml(file_path):
 
 
 def read_config_file(file_path):
-    supported_formats = ["JSON", "TOML"]
-    reading_functions = [read_json, read_toml]
-    for func in reading_functions:
-        try:
-            data = func(file_path)
-            return data
-        except (json.decoder.JSONDecodeError, tomllib.TOMLDecodeError):
-            pass
-    # If we arrive here, there has been an issue in all reading functions
-    raise ValueError(
-        f"File {file_path} is not valid in any of the supported formats "
-        f"({','.join(supported_formats)})"
-    )
+    file_path = Path(file_path)
+
+    if file_path.suffix.lower() == ".json":
+        return read_json(file_path)
+    if file_path.suffix.lower() == ".toml":
+        return read_toml(file_path)
+
+    raise ValueError(f"Unsupported config file format: {file_path.suffix}")
