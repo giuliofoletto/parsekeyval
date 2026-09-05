@@ -38,6 +38,17 @@ def test_parse_json_config_file(tmp_path):
     assert args.uppercase is False
 
 
+def test_parse_toml_config_file(tmp_path):
+    config_path = tmp_path / "config.toml"
+    config_path.write_text('word = "from-toml"\nnumber = 4\n', encoding="utf-8")
+
+    args = parse_arguments(ExampleArguments, ["--config", str(config_path)])
+
+    assert args.word == "from-toml"
+    assert args.number == 4
+    assert args.uppercase is False
+
+
 def test_cli_arguments_override_config_file(tmp_path):
     config_path = tmp_path / "config.json"
     config_path.write_text(json.dumps({"word": "from-config", "number": 3}), encoding="utf-8")
