@@ -33,6 +33,22 @@ class BooleanArguments(Arguments):
     cache: bool = Argument(default=True, description="Use cache")
 
 
+class RangeArguments(Arguments):
+    minimum: int = Argument(default=0, description="Minimum value")
+    maximum: int = Argument(default=10, description="Maximum value")
+
+    def validate(self):
+        if self.minimum > self.maximum:
+            raise ValueError("minimum cannot be greater than maximum")
+
+
+class BooleanValidationArguments(Arguments):
+    valid: bool = Argument(default=True, description="Whether validation succeeds")
+
+    def validate(self):
+        return self.valid
+
+
 def test_parse_defaults():
     args = ExampleArguments.parse([])
 
@@ -183,3 +199,20 @@ def test_duplicate_boolean_argument_exits():
 def test_contradictory_boolean_flags_exit():
     with pytest.raises(SystemExit):
         BooleanArguments.parse(["--enabled", "--no-enabled"])
+
+
+def test_custom_validation_method_accepts_valid_arguments():
+    args = RangeArguments.parse(["--minimum", "1", "--maximum", "2"])
+
+    assert args.minimum == 1
+    assert args.maximum == 2
+
+
+def test_custom_validation_method_can_raise_value_error():
+    with pytest.raises(ValueError, match="minimum cannot be greater than maximum"):
+        RangeArguments.parse(["--minimum", "3", "--maximum", "2"])
+
+
+def test_custom_validation_method_can_return_false():
+    with pytest.raises(ValueError, match="Invalid arguments"):
+        BooleanValidationArguments.parse(["--valid", "false"])

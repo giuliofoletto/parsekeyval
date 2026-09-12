@@ -36,6 +36,20 @@ def main():
     ...
 ```
 
+You can add cross-field validation rules by defining a `validate` method.
+Raise `ValueError` with a useful message when the arguments are invalid.
+Returning `False` is also accepted and raises a generic `ValueError`.
+
+```python
+class Options(Arguments):
+    minimum: int = Argument(default=0)
+    maximum: int = Argument(default=10)
+
+    def validate(self):
+        if self.minimum > self.maximum:
+            raise ValueError("minimum cannot be greater than maximum")
+```
+
 ## Priority of arguments
 
 If arguments are passed both via CLI and via a configuration file, the CLI arguments will take precedence over the configuration file.

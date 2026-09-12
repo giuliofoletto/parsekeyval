@@ -23,6 +23,9 @@ class Arguments(BaseModel):
             )
             raise ValueError(msg)
 
+    def validate(self):
+        return None
+
     @classmethod
     def parse(cls, argv=None):
         return _parse_arguments(cls, argv)
@@ -168,4 +171,10 @@ def _parse_arguments(arguments_class, argv=None):
 
     # Validate user settings against the model
     args = arguments_class(**config)
+
+    # Validate cross-field user-defined rules
+    validation_result = args.validate()
+    if validation_result is False:
+        raise ValueError("Invalid arguments")
+
     return args
