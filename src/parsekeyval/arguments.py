@@ -14,6 +14,15 @@ Argument = Field
 class Arguments(BaseModel):
     config: str | None = Argument(default=None, description="File containing all arguments")
 
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if "config" in cls.__dict__.get("__annotations__", {}):
+            msg = (
+                "'config' is reserved by parsekeyval for configuration file loading. "
+                "Use another field name."
+            )
+            raise ValueError(msg)
+
     @classmethod
     def parse(cls, argv=None):
         return _parse_arguments(cls, argv)

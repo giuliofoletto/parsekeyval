@@ -86,6 +86,13 @@ def test_missing_config_file_raises():
         ExampleArguments.parse(["--config", "missing.json"])
 
 
+def test_config_field_is_reserved():
+    with pytest.raises(ValueError, match="'config' is reserved"):
+
+        class InvalidArguments(Arguments):
+            config: str = Argument(default="app", description="Application config")
+
+
 def test_read_config_file_rejects_unsupported_suffix(tmp_path):
     config_path = tmp_path / "config.yaml"
     config_path.write_text("word: from-yaml\n", encoding="utf-8")

@@ -11,6 +11,7 @@ my_program --arg1 value1 --arg2 value2
 
 Parsekeyval automatically includes the possibility to pass a configuration file as input, containing all other arguments.
 Currently the supported formats are JSON and TOML.
+The `config` argument name is reserved for this purpose.
 
 ```bash
 my_program --arg1 value1 --config path/to/config.json
