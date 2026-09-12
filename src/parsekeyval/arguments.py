@@ -13,6 +13,24 @@ class BaseArguments(BaseModel):
     config: str | None = Field(default=None, description="File containing all arguments")
 
 
+_TRUE_VALUES = {"1", "true", "t", "yes", "y", "on"}
+_FALSE_VALUES = {"0", "false", "f", "no", "n", "off"}
+
+
+def _parse_bool(value):
+    if isinstance(value, bool):
+        return value
+
+    normalized = value.lower()
+    if normalized in _TRUE_VALUES:
+        return True
+    if normalized in _FALSE_VALUES:
+        return False
+
+    msg = f"invalid boolean value: {value!r}"
+    raise argparse.ArgumentTypeError(msg)
+
+
 def _unwrap_optional(annotation):
     origin = get_origin(annotation)
     if origin in (Union, UnionType):
@@ -74,18 +92,23 @@ def add_model(parser, model):
     for name, field in fields.items():
         command_string = "--" + name.replace("_", "-")
         field_type = _unwrap_optional(field.annotation)
-        # handle flags
+        # handle boolean values and convenience flags
         if field_type is bool:
-            if field.default:
-                action = "store_false"
-            else:
-                action = "store_true"
             parser.add_argument(
                 command_string,
                 dest=name,
+                nargs="?",
+                const=True,
+                type=_parse_bool,
                 default=argparse.SUPPRESS,
-                action=action,
                 help=field.description,
+            )
+            parser.add_argument(
+                "--no-" + name.replace("_", "-"),
+                dest=name,
+                action="store_false",
+                default=argparse.SUPPRESS,
+                help=f"Disable {field.description}",
             )
         else:
             parser.add_argument(

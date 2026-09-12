@@ -28,6 +28,11 @@ class RichArguments(BaseArguments):
     output_path: Path | None = Field(default=None, description="Output path")
 
 
+class BooleanArguments(BaseArguments):
+    enabled: bool = Field(default=False, description="Enable feature")
+    cache: bool = Field(default=True, description="Use cache")
+
+
 def test_parse_defaults():
     args = parse_arguments(ExampleArguments, [])
 
@@ -122,3 +127,36 @@ def test_parse_enum_literal_and_path_arguments(tmp_path):
 def test_parse_invalid_literal_argument_exits():
     with pytest.raises(SystemExit):
         parse_arguments(RichArguments, ["--mode", "unsupported"])
+
+
+def test_parse_boolean_key_value_arguments():
+    args = parse_arguments(BooleanArguments, ["--enabled", "true", "--cache", "false"])
+
+    assert args.enabled is True
+    assert args.cache is False
+
+
+@pytest.mark.parametrize("value", ["1", "true", "t", "yes", "y", "on"])
+def test_parse_boolean_true_values(value):
+    args = parse_arguments(BooleanArguments, ["--enabled", value])
+
+    assert args.enabled is True
+
+
+@pytest.mark.parametrize("value", ["0", "false", "f", "no", "n", "off"])
+def test_parse_boolean_false_values(value):
+    args = parse_arguments(BooleanArguments, ["--cache", value])
+
+    assert args.cache is False
+
+
+def test_parse_boolean_convenience_flags():
+    args = parse_arguments(BooleanArguments, ["--enabled", "--no-cache"])
+
+    assert args.enabled is True
+    assert args.cache is False
+
+
+def test_parse_invalid_boolean_argument_exits():
+    with pytest.raises(SystemExit):
+        parse_arguments(BooleanArguments, ["--enabled", "maybe"])

@@ -20,3 +20,11 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# Boolean values can be passed in key-value style:
+# python examples/example.py --uppercase true
+# python examples/example.py --uppercase false
+#
+# Convenience flag aliases are also available:
+# python examples/example.py --uppercase
+# python examples/example.py --no-uppercase
