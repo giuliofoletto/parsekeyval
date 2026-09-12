@@ -18,20 +18,20 @@ my_program --arg1 value1 --config path/to/config.json
 
 ## Usage
 
-As you can see in [examples/example.py](examples/example.py), you can define your arguments by subclassing the `BaseArguments` class and defining your arguments as Pydantic fields.
+As you can see in [examples/example.py](examples/example.py), you can define your arguments by subclassing the `Arguments` class and defining fields with `Argument`.
 
 ```python
-from parsekeyval import BaseArguments, Field, parse_arguments
+from parsekeyval import Argument, Arguments
 
 
-class Arguments(BaseArguments):
-    word: str = Field(default="hello", description="Word to print")
-    number: int = Field(default=1, description="Number of times to print the word")
-    uppercase: bool = Field(default=False, description="Whether to print the word in uppercase")
+class Options(Arguments):
+    word: str = Argument(default="hello", description="Word to print")
+    number: int = Argument(default=1, description="Number of times to print the word")
+    uppercase: bool = Argument(default=False, description="Whether to print the word in uppercase")
 
 
 def main():
-    args = parse_arguments(Arguments)
+    options = Options.parse()
     ...
 ```
 
@@ -61,4 +61,4 @@ For instance, tests are AI-generated.
 
 ## Acknowledgements
 
-The core of this small project is the `add_model` function, taken from [this StackOverflow answer](https://stackoverflow.com/questions/72741663/argument-parser-from-a-pydantic-model).
+The core of this small project started from the model-to-argparse function in [this StackOverflow answer](https://stackoverflow.com/questions/72741663/argument-parser-from-a-pydantic-model).

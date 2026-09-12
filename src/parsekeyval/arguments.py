@@ -8,9 +8,15 @@ from pydantic import BaseModel, Field
 
 from parsekeyval.fileio import process_existing_file_name, read_config_file
 
+Argument = Field
 
-class BaseArguments(BaseModel):
-    config: str | None = Field(default=None, description="File containing all arguments")
+
+class Arguments(BaseModel):
+    config: str | None = Argument(default=None, description="File containing all arguments")
+
+    @classmethod
+    def parse(cls, argv=None):
+        return _parse_arguments(cls, argv)
 
 
 _TRUE_VALUES = {"1", "true", "t", "yes", "y", "on"}
@@ -94,7 +100,7 @@ def _argparse_kwargs(annotation):
     return {}
 
 
-def add_model(parser, model):
+def _add_model(parser, model):
     """
     Add Pydantic model to an ArgumentParser.
     Taken from
@@ -136,9 +142,9 @@ def add_model(parser, model):
             )
 
 
-def parse_arguments(arguments_class, argv=None):
+def _parse_arguments(arguments_class, argv=None):
     parser = argparse.ArgumentParser()
-    add_model(parser, arguments_class)
+    _add_model(parser, arguments_class)
     kwargs = parser.parse_args(argv)
 
     # Create an object of user settings

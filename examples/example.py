@@ -1,21 +1,21 @@
-from parsekeyval import BaseArguments, Field, parse_arguments
+from parsekeyval import Argument, Arguments
 
 
-class Arguments(BaseArguments):
-    word: str = Field(default="hello", description="Word to print")
-    number: int = Field(default=1, description="Number of times to print the word")
-    uppercase: bool = Field(default=False, description="Whether to print the word in uppercase")
+class Options(Arguments):
+    word: str = Argument(default="hello", description="Word to print")
+    number: int = Argument(default=1, description="Number of times to print the word")
+    uppercase: bool = Argument(default=False, description="Whether to print the word in uppercase")
 
 
 def main():
-    args = parse_arguments(Arguments)
-    print(args)
+    options = Options.parse()
+    print(options)
     print("Printing the word:")
-    for _ in range(args.number):
-        if args.uppercase:
-            print(args.word.upper())
+    for _ in range(options.number):
+        if options.uppercase:
+            print(options.word.upper())
         else:
-            print(args.word)
+            print(options.word)
 
 
 if __name__ == "__main__":
