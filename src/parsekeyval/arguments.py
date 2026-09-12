@@ -17,6 +17,18 @@ _TRUE_VALUES = {"1", "true", "t", "yes", "y", "on"}
 _FALSE_VALUES = {"0", "false", "f", "no", "n", "off"}
 
 
+class _StoreOnceAction(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if hasattr(namespace, self.dest):
+            parser.error(f"argument {option_string}: specified multiple times")
+
+        if self.nargs == 0:
+            values = self.const
+
+        setattr(namespace, self.dest, values)
+
+
+
 def _parse_bool(value):
     if isinstance(value, bool):
         return value
@@ -100,13 +112,16 @@ def add_model(parser, model):
                 nargs="?",
                 const=True,
                 type=_parse_bool,
+                action=_StoreOnceAction,
                 default=argparse.SUPPRESS,
                 help=field.description,
             )
             parser.add_argument(
                 "--no-" + name.replace("_", "-"),
                 dest=name,
-                action="store_false",
+                nargs=0,
+                const=False,
+                action=_StoreOnceAction,
                 default=argparse.SUPPRESS,
                 help=f"Disable {field.description}",
             )
@@ -114,6 +129,7 @@ def add_model(parser, model):
             parser.add_argument(
                 command_string,
                 dest=name,
+                action=_StoreOnceAction,
                 default=argparse.SUPPRESS,
                 help=field.description,
                 **_argparse_kwargs(field.annotation),

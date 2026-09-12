@@ -160,3 +160,23 @@ def test_parse_boolean_convenience_flags():
 def test_parse_invalid_boolean_argument_exits():
     with pytest.raises(SystemExit):
         parse_arguments(BooleanArguments, ["--enabled", "maybe"])
+
+
+def test_duplicate_scalar_argument_exits():
+    with pytest.raises(SystemExit):
+        parse_arguments(ExampleArguments, ["--word", "hello", "--word", "goodbye"])
+
+
+def test_duplicate_list_argument_exits():
+    with pytest.raises(SystemExit):
+        parse_arguments(RichArguments, ["--names", "alice", "--names", "bob"])
+
+
+def test_duplicate_boolean_argument_exits():
+    with pytest.raises(SystemExit):
+        parse_arguments(BooleanArguments, ["--enabled", "true", "--enabled", "false"])
+
+
+def test_contradictory_boolean_flags_exit():
+    with pytest.raises(SystemExit):
+        parse_arguments(BooleanArguments, ["--enabled", "--no-enabled"])
